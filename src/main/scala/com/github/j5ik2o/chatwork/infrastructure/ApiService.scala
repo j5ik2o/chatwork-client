@@ -15,41 +15,23 @@
  */
 package com.github.j5ik2o.chatwork.infrastructure
 
-import org.jboss.netty.buffer.ChannelBuffers._
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
-import org.jboss.netty.handler.codec.http.HttpVersion._
-import org.jboss.netty.util.CharsetUtil._
-import com.twitter.finagle.http.Request
+import com.twitter.finagle.http.{Request, RequestBuilder}
 import scala.concurrent.{Future, ExecutionContext}
-import scala.collection.JavaConverters._
 import FutureUtil._
 
-abstract class ApiService(service: Service[HttpRequest, HttpResponse]) {
+abstract class ApiService(service: Service[HttpRequest, HttpResponse], host: String, apiToken: String) {
 
-  protected def sendRequest
-  (method: HttpMethod,
-   path: String,
-   params: Map[String, Option[String]] = Map.empty,
-   headers: Map[String, Any] = Map.empty,
-   body: Option[String] = None)
-  (implicit executor: ExecutionContext): Future[HttpResponse] = {
-    val paramsString = params.toList.map {
-      case (key, Some(value)) => Some("%s=%s".format(key, value))
-      case _ => None
-    }.flatten.mkString("&")
-    val request = new DefaultHttpRequest(HTTP_1_1, method, if (params.isEmpty) path else path + "?" + paramsString)
-    headers.foreach {
-      case (k, v: Iterable[_]) =>
-        request.setHeader(k, v.asJava)
-      case (k, v) =>
-        request.setHeader(k, v)
-    }
-    body.foreach(e => request.setContent(copiedBuffer(e, UTF_8)))
-    service(Request(request)).toScala.map {
+  protected def createRequestBuilder(path: String) =
+    RequestBuilder().url("http://" + host + path).addHeader("X-ChatWorkToken", apiToken)
+
+  protected def sendRequest(request: HttpRequest)(implicit executor: ExecutionContext): Future[HttpResponse] =
+    service(Request(request)).toScala.flatMap {
       response =>
-        if (response.getStatus == HttpResponseStatus.OK) response
-        else throw new RuntimeException(response.toString)
+        if (response.getStatus == HttpResponseStatus.OK) Future.successful(response)
+        else Future.failed(new RuntimeException(response.toString))
     }
-  }
+
+
 }

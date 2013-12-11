@@ -14,8 +14,9 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "org.scala-lang" % "scala-reflect" % "2.10.3",
   "org.sisioh" %% "scala-dddbase-core" % "0.1.25",
-  "org.sisioh" %% "scala-toolbox" % "0.0.6",
+  "org.sisioh" %% "scala-toolbox" % "0.0.7",
   "com.twitter" %% "finagle-core" % "6.4.1" excludeAll(
     ExclusionRule(organization = "log4j", name = "log4j"),
     ExclusionRule(organization = "org.slf4j", name = "slf4j-api"),
@@ -28,5 +29,7 @@ libraryDependencies ++= Seq(
     ExclusionRule(organization = "org.slf4j", name = "slf4j-jdk14"),
     ExclusionRule(organization = "org.slf4j", name = "slf4j-log4j12")
     ),
-  "org.json4s" %% "json4s-jackson" % "3.2.2"
+  "org.json4s" %% "json4s-jackson" % "3.2.2",
+  "org.specs2" %% "specs2" % "2.0" % "test",
+  "org.mockito" % "mockito-core" % "1.9.5" % "test"
 )

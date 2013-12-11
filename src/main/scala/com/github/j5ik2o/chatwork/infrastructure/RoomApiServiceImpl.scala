@@ -16,30 +16,116 @@
 package com.github.j5ik2o.chatwork.infrastructure
 
 import com.twitter.finagle.Service
-import org.jboss.netty.handler.codec.http.{HttpMethod, HttpResponse, HttpRequest}
+import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
 import scala.concurrent.{Future, ExecutionContext}
 import org.json4s.jackson.JsonMethods._
 import org.jboss.netty.util.CharsetUtil._
-import scala.Some
+import org.json4s.DefaultReaders._
+import org.json4s.JArray
 
-class RoomApiServiceImpl(service: Service[HttpRequest, HttpResponse])
-  extends ApiService(service) with CrudApiService[Int] {
+import FutureUtil._
 
-  def create(entity: Map[String, Any])(implicit executor: ExecutionContext): Future[Map[String, Any]] = {
-    val body = Some(entity.map {
+object IconPresets extends Enumeration {
+  val group, check, document, meeting, event,
+  project, business, study, security, star, idea, heart, magcup, beer, music, sports, travel = Value
+}
+
+
+case class Room
+(name: String,
+ iconPreset: Option[IconPresets.Value],
+ membersAdminIds: Seq[Int],
+ membersMemberIds: Option[Seq[Int]]) {
+  def toMap: Map[String, Any] = {
+    Map(
+      "name" -> name,
+      "members_admin_ids" -> membersAdminIds.mkString(",")
+    ) ++ iconPreset.map {
       e =>
-        Seq(e._1, "=", e._2).mkString
-    }.toList.mkString("&"))
-    sendRequest(HttpMethod.POST, "/v1/rooms", Map.empty, Map.empty, body).map {
-      response =>
-        val json = parse(response.getContent.toString(UTF_8))
         Map(
-          "description" -> (json \ "description").as[String]
+          "icon_preset" -> e.toString
+        )
+    }.getOrElse(Map.empty) ++ membersMemberIds.map {
+      e =>
+        Map(
+          "members_member_ids" -> e.mkString(",")
+        )
+    }.getOrElse(Map.empty)
+  }
+}
+
+
+class RoomApiServiceImpl(service: Service[HttpRequest, HttpResponse], host: String, apiToken: String)
+  extends ApiService(service, host, apiToken) {
+
+  def create(entity: Room)(implicit executor: ExecutionContext): Future[Map[String, Any]] = {
+    val tuples = entity.toMap.map {
+      case (k, v) => (k, v.toString)
+    }.toSeq
+    val req = createRequestBuilder("/v1/rooms").addFormElement(tuples: _*).buildFormPost(false)
+    service(req).toScala.map {
+      response =>
+        val json = response.getContent.toString(UTF_8)
+        val jValue = parse(json)
+        println(pretty(jValue))
+        Map(
+          "roomId" -> (jValue \ "room_id").as[String]
         )
     }
   }
 
-  def get(identity: Int)(implicit executor: ExecutionContext): Future[Map[String, Any]] = ???
+  def list(implicit executor: ExecutionContext): Future[Seq[Map[String, Any]]] = {
+    val request = createRequestBuilder("/v1/rooms").buildGet()
+    sendRequest(request).map {
+      response =>
+        val json = response.getContent.toString(UTF_8)
+        val jValue = parse(json)
+        // println(pretty(jValue))
+        val array = jValue.as[JArray]
+        array.arr.map {
+          e =>
+            Map(
+              "roomId" -> (e \ "room_id").as[Int],
+              "name" -> (e \ "name").as[String],
+              "type" -> (e \ "type").as[String],
+              "role" -> (e \ "role").as[String],
+              "sticky" -> (e \ "sticky").as[Boolean],
+              "unreadNum" -> (e \ "unread_num").as[Int],
+              "mentionNum" -> (e \ "mention_num").as[Int],
+              "mytaskNum" -> (e \ "mytask_num").as[Int],
+              "messageNum" -> (e \ "message_num").as[Int],
+              "fileNum" -> (e \ "file_num").as[Int],
+              "taskNum" -> (e \ "task_num").as[Int],
+              "iconPath" -> (e \ "icon_path").as[String],
+              "lastUpdateTime" -> (e \ "last_update_time").as[Long]
+            )
+        }
+    }
+  }
+
+  def get(identity: Int)(implicit executor: ExecutionContext): Future[Map[String, Any]] = {
+    val request = createRequestBuilder(s"/v1/rooms/$identity").buildGet()
+    sendRequest(request).map {
+      response =>
+        val jValue = parse(response.getContent.toString(UTF_8))
+        // println(pretty(jValue))
+        Map(
+          "roomId" -> (jValue \ "room_id").as[Int],
+          "name" -> (jValue \ "name").as[String],
+          "type" -> (jValue \ "type").as[String],
+          "role" -> (jValue \ "role").as[String],
+          "sticky" -> (jValue \ "sticky").as[Boolean],
+          "unreadNum" -> (jValue \ "unread_num").as[Int],
+          "mentionNum" -> (jValue \ "mention_num").as[Int],
+          "mytaskNum" -> (jValue \ "mytask_num").as[Int],
+          "messageNum" -> (jValue \ "message_num").as[Int],
+          "fileNum" -> (jValue \ "file_num").as[Int],
+          "taskNum" -> (jValue \ "task_num").as[Int],
+          "iconPath" -> (jValue \ "icon_path").as[String],
+          "description" -> (jValue \ "description").as[String]
+        )
+    }
+  }
 
   def update(entity: Map[String, Any])(implicit executor: ExecutionContext): Future[Map[String, Any]] = ???
 
