@@ -28,7 +28,6 @@ import org.sisioh.scala.toolbox.LoggingEx
 class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
   extends ApiService(client.service, client.host, apiToken.getOrElse(System.getProperty("apiToken")))
   with RoomApiService with LoggingEx {
-  println(apiToken)
 
   def create(params: CreateRoomParams)
             (implicit executor: ExecutionContext): Future[Int] = {

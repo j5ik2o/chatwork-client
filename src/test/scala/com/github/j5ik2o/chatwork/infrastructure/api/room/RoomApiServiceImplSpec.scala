@@ -1,4 +1,4 @@
-package com.github.j5ik2o.chatwork.infrastructure
+package com.github.j5ik2o.chatwork.infrastructure.api.room
 
 import org.specs2.mutable.Specification
 import scala.concurrent.{Await, Future}
@@ -11,6 +11,7 @@ class RoomApiServiceImplSpec extends Specification {
 
   "RoomApiServiceImpl" should {
     "get room entity" in {
+
       val client = ClientFactory.create("api.chatwork.com")
       val api = RoomApiService(client)
 
