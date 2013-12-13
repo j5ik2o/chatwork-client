@@ -17,19 +17,8 @@ class MemberApiServiceImpl(client: Client, apiToken: Option[String] = None)
     sendRequest(request).flatMap {
       response =>
         if (response.getStatus == HttpResponseStatus.OK) {
-          Future.successful(getResponseAsJValue(response).as[JArray].arr.map {
-            e =>
-              Member(
-                (e \ "account_id").as[Int],
-                (e \ "role").as[String],
-                (e \ "name").as[String],
-                (e \ "chatwork_id").as[String],
-                (e \ "organization_id").as[Int],
-                (e \ "organization_name").as[String],
-                (e \ "department").as[String],
-                (e \ "avatar_image_url").as[String]
-              )
-          })
+          val json = getResponseAsJValue(response)
+          Future.successful(json.as[JArray].arr.map(Member.apply))
         } else {
           handleErrorResponse(response)
         }
@@ -46,11 +35,7 @@ class MemberApiServiceImpl(client: Client, apiToken: Option[String] = None)
         println(response.getStatus, response.getContent.toString(CharsetUtil.UTF_8))
         if (response.getStatus == HttpResponseStatus.OK) {
           val json = getResponseAsJValue(response)
-          Future.successful(UpdateResult(
-            (json \ "admin").as[JArray].arr.map(e => e.as[Int]).toSeq,
-            (json \ "member").as[JArray].arr.map(e => e.as[Int]).toSeq,
-            (json \ "readonly").as[JArray].arr.map(e => e.as[Int]).toSeq)
-          )
+          Future.successful(UpdateResult(json))
         } else {
           handleErrorResponse(response)
         }

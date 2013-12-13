@@ -1,5 +1,7 @@
 package com.github.j5ik2o.chatwork.infrastructure.api.room
 
+import org.json4s.JValue
+
 /**
  * "account_id": 123,
     "role": "member",
@@ -20,3 +22,20 @@ case class Member
  department: String,
  avatarImageUrl: String)
 
+object Member {
+
+  def apply(jValue: JValue): Member = {
+    Member(
+      (jValue \ "account_id").as[Int],
+      (jValue \ "role").as[String],
+      (jValue \ "name").as[String],
+      (jValue \ "chatwork_id").as[String],
+      (jValue \ "organization_id").as[Int],
+      (jValue \ "organization_name").as[String],
+      (jValue \ "department").as[String],
+      (jValue \ "avatar_image_url").as[String]
+    )
+  }
+
+
+}
