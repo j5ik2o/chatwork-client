@@ -11,7 +11,7 @@ class MessageApiServiceImpl(client: Client, apiToken: Option[String] = None)
   with MessageApiService {
 
   def send(roomId: Int, message: String)(implicit executor: ExecutionContext): Future[Int] = {
-    val request = createRequestBuilder(s"/v1/rooms/${roomId}/members").
+    val request = createRequestBuilder(s"/v1/rooms/${roomId}/messages").
       addFormElement("body" -> message).
       buildFormPost(false)
 
