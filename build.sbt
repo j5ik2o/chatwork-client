@@ -19,6 +19,8 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % "2.10.3",
   "org.sisioh" %% "scala-dddbase-core" % "0.1.25",
   "org.sisioh" %% "scala-toolbox" % "0.0.7",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.37.1",
+  "org.seleniumhq.selenium" % "selenium-chrome-driver" % "2.37.1",
   "com.twitter" %% "finagle-core" % "6.4.1" excludeAll(
     ExclusionRule(organization = "log4j", name = "log4j"),
     ExclusionRule(organization = "org.slf4j", name = "slf4j-api"),
@@ -35,5 +37,11 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-jackson" % "3.2.2",
   "org.specs2" %% "specs2" % "2.0" % "test",
   "org.mockito" % "mockito-core" % "1.9.5" % "test",
-  "com.google.guava" % "guava" % "15.0"
+  "com.google.guava" % "guava" % "15.0",
+  "org.slf4j" % "slf4j-api" % "1.6.6",
+  "org.slf4j" % "log4j-over-slf4j" % "1.6.6",
+  "org.slf4j" % "jul-to-slf4j" % "1.6.6",
+  "org.clapper" %% "grizzled-slf4j" % "1.0.1",
+  "ch.qos.logback" % "logback-core" % "1.0.7" exclude("org.slf4j", "slf4j-api"),
+  "ch.qos.logback" % "logback-classic" % "1.0.7"
 )
