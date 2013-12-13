@@ -3,7 +3,6 @@ package com.github.j5ik2o.chatwork.infrastructure.api.room
 import org.specs2.mutable.Specification
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.j5ik2o.chatwork.infrastructure.api.room.RoomApiService
 import com.github.j5ik2o.chatwork.infrastructure.api.ClientFactory
 import scala.concurrent.duration.Duration
 

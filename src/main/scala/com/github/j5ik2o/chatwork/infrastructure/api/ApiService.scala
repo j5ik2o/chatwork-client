@@ -25,7 +25,9 @@ import org.json4s.jackson.JsonMethods._
 import org.jboss.netty.util.CharsetUtil._
 import org.json4s.DefaultReaders._
 
-abstract class ApiService(service: Service[HttpRequest, HttpResponse], host: String, apiToken: String) {
+abstract class ApiService(service: Service[HttpRequest, HttpResponse], host: String, _apiToken: Option[String]) {
+
+  private val apiToken = _apiToken.getOrElse(System.getProperty("apiToken"))
 
   protected def getResponseAsJValue(response: HttpResponse): JValue =
     parse(response.getContent.toString(UTF_8))

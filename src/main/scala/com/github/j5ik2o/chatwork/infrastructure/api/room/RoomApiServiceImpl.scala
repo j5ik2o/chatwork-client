@@ -25,8 +25,9 @@ import org.jboss.netty.util.CharsetUtil
 import com.github.j5ik2o.chatwork.infrastructure.api.{Client, ApiService, ActionType}
 import org.sisioh.scala.toolbox.LoggingEx
 
+private
 class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
-  extends ApiService(client.service, client.host, apiToken.getOrElse(System.getProperty("apiToken")))
+  extends ApiService(client.service, client.host, apiToken)
   with RoomApiService with LoggingEx {
 
   def create(params: CreateRoomParams)
