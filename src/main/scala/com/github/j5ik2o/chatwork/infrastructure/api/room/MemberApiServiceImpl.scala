@@ -16,7 +16,6 @@ class MemberApiServiceImpl(client: Client, apiToken: Option[String] = None)
     val request = createRequestBuilder(s"/v1/rooms/$roomId/members").buildGet()
     sendRequest(request).flatMap {
       response =>
-        println(response.getStatus, response.getContent.toString(CharsetUtil.UTF_8))
         if (response.getStatus == HttpResponseStatus.OK) {
           Future.successful(getResponseAsJValue(response).as[JArray].arr.map {
             e =>

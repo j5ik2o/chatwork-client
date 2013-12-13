@@ -43,9 +43,10 @@ class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
   }
 
 
-  def list(implicit executor: ExecutionContext): Future[Seq[Room]] = {
+  def list(implicit executor: ExecutionContext): Future[Seq[Room]] = withDebugScope("list"){
+    scopedDebug("createRequestBuilder")
     val request = createRequestBuilder("/v1/rooms").buildGet()
-
+    scopedDebug(s"sendRequest($request)")
     sendRequest(request).map {
       response =>
         getResponseAsJValue(response).as[JArray].arr.map {
