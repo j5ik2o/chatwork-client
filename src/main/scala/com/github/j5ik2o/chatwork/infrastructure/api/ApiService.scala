@@ -46,8 +46,9 @@ abstract class ApiService(service: Service[HttpRequest, HttpResponse], host: Str
   protected def createRequestBuilder(path: String) =
     RequestBuilder().url("http://" + host + path).addHeader("X-ChatWorkToken", apiToken)
 
-  protected def sendRequest(request: HttpRequest)(implicit executor: ExecutionContext): Future[HttpResponse] =
+  protected def sendRequest(request: HttpRequest)(implicit executor: ExecutionContext): Future[HttpResponse] = {
     service(Request(request)).toScala
+  }
 
 
 }

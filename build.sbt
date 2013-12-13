@@ -1,3 +1,5 @@
+net.virtualvoid.sbt.graph.Plugin.graphSettings
+
 name := "chatwork-client"
 
 version := "0.0.1-SNAPSHOT"
@@ -21,7 +23,8 @@ libraryDependencies ++= Seq(
     ExclusionRule(organization = "log4j", name = "log4j"),
     ExclusionRule(organization = "org.slf4j", name = "slf4j-api"),
     ExclusionRule(organization = "org.slf4j", name = "slf4j-jdk14"),
-    ExclusionRule(organization = "org.slf4j", name = "slf4j-log4j12")
+    ExclusionRule(organization = "org.slf4j", name = "slf4j-log4j12"),
+    ExclusionRule(organization = "com.google.guava", name = "guava")
     ),
   "com.twitter" %% "finagle-http" % "6.4.1" excludeAll(
     ExclusionRule(organization = "log4j", name = "log4j"),
@@ -31,5 +34,6 @@ libraryDependencies ++= Seq(
     ),
   "org.json4s" %% "json4s-jackson" % "3.2.2",
   "org.specs2" %% "specs2" % "2.0" % "test",
-  "org.mockito" % "mockito-core" % "1.9.5" % "test"
+  "org.mockito" % "mockito-core" % "1.9.5" % "test",
+  "com.google.guava" % "guava" % "15.0"
 )
