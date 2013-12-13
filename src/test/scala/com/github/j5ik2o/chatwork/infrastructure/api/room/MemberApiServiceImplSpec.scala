@@ -4,7 +4,6 @@ import org.specs2.mutable.Specification
 import com.github.j5ik2o.chatwork.infrastructure.api.ClientFactory
 import scala.concurrent.{ExecutionContext, Await}
 import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.github.j5ik2o.chatwork.infrastructure.ApiThreadPoolExecutor
 
 class MemberApiServiceImplSpec extends Specification {
@@ -12,14 +11,20 @@ class MemberApiServiceImplSpec extends Specification {
   val api = RoomApiService(client)
   val memberApi = MemberApiService(client)
 
-  implicit val executor = ExecutionContext.fromExecutorService(new ApiThreadPoolExecutor())
 
-  val f = for {
-    rooms <- api.list
-  } yield {
-    println("result = " + rooms)
+  implicit val executor = ExecutionContext.fromExecutorService(ApiThreadPoolExecutor())
+  "s" should {
+    "v" in {
+      val f = for {
+        rooms <- api.list
+      } yield {
+        println("result = " + rooms)
+      }
+
+      Await.result(f, Duration.Inf)
+      true must beTrue
+    }
   }
 
-  Await.result(f, Duration.Inf)
-  true must beTrue
+
 }

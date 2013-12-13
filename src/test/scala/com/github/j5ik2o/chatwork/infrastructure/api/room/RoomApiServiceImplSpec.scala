@@ -2,24 +2,17 @@ package com.github.j5ik2o.chatwork.infrastructure.api.room
 
 import org.specs2.mutable.Specification
 import scala.concurrent.{Await, Future}
-
 import com.github.j5ik2o.chatwork.infrastructure.api.ClientFactory
 import scala.concurrent.duration.Duration
-import java.util.concurrent.Executors
 import com.github.j5ik2o.chatwork.infrastructure.ApiThreadPoolExecutor
+import scala.concurrent.ExecutionContext
 
 class RoomApiServiceImplSpec extends Specification {
 
-  import scala.concurrent.ExecutionContext
-
-  implicit val executor = ExecutionContext.fromExecutorService(new ApiThreadPoolExecutor())
-
-
-
+  implicit val executor = ExecutionContext.fromExecutorService(ApiThreadPoolExecutor())
 
   "RoomApiServiceImpl" should {
     "get room entity" in {
-
       val client = ClientFactory.create("api.chatwork.com")
       val api = RoomApiService(client)
 
