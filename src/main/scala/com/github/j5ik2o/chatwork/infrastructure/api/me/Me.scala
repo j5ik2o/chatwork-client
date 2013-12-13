@@ -1,5 +1,8 @@
 package com.github.j5ik2o.chatwork.infrastructure.api.me
 
+import org.json4s._
+import org.json4s.DefaultReaders._
+
 /**
  * {
   "account_id": 123,
@@ -42,4 +45,27 @@ case class Me
  twitter: String,
  avatarImageUrl: String)
 
-
+object Me {
+  def apply(jValue: JValue): Me = {
+    Me(
+      (jValue \ "account_id").as[Int],
+      (jValue \ "room_id").as[Int],
+      (jValue \ "name").as[String],
+      (jValue \ "chatwork_id").as[String],
+      (jValue \ "organization_id").as[Int],
+      (jValue \ "organization_name").as[String],
+      (jValue \ "department").as[String],
+      (jValue \ "title").as[String],
+      (jValue \ "url").as[String],
+      (jValue \ "introduction").as[String],
+      (jValue \ "mail").as[String],
+      (jValue \ "tel_organization").as[String],
+      (jValue \ "tel_extension").as[String],
+      (jValue \ "tel_mobile").as[String],
+      (jValue \ "skype").as[String],
+      (jValue \ "facebook").as[String],
+      (jValue \ "twitter").as[String],
+      (jValue \ "avatar_image_url").as[String]
+    )
+  }
+}

@@ -25,7 +25,8 @@ import org.json4s.jackson.JsonMethods._
 import org.jboss.netty.util.CharsetUtil._
 import org.json4s.DefaultReaders._
 
-abstract class ApiService(service: Service[HttpRequest, HttpResponse], host: String, _apiToken: Option[String]) {
+abstract class AbstractApiService
+(service: Service[HttpRequest, HttpResponse], host: String, _apiToken: Option[String]) {
 
   private val apiToken = _apiToken.getOrElse(System.getProperty("apiToken"))
 
@@ -37,7 +38,7 @@ abstract class ApiService(service: Service[HttpRequest, HttpResponse], host: Str
     Future.failed(ApiException(errorMessages))
   }
 
-  protected def toTuples(params: RequestParams): Seq[(String, String)] = {
+  protected def toForm(params: RequestParams): Seq[(String, String)] = {
     params.toMap.map {
       case (k, v) => (k, v.toString)
     }.toSeq

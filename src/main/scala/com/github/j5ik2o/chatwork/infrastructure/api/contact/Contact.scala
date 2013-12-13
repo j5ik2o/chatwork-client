@@ -1,21 +1,23 @@
-package com.github.j5ik2o.chatwork.infrastructure.api.room
+package com.github.j5ik2o.chatwork.infrastructure.api.contact
 
 import org.json4s._
 import org.json4s.DefaultReaders._
 
 /**
- * "account_id": 123,
-    "role": "member",
+ * {
+    "account_id": 123,
+    "room_id": 322,
     "name": "John Smith",
     "chatwork_id": "tarochatworkid",
     "organization_id": 101,
     "organization_name": "Hello Company",
     "department": "Marketing",
     "avatar_image_url": "https://example.com/abc.png"
+  }
  */
-case class Member
-(acountId: Int,
- role: String,
+case class Contact
+(accountId: Int,
+ roomId: Int,
  name: String,
  chatWorkId: String,
  organizationId: Int,
@@ -23,12 +25,12 @@ case class Member
  department: String,
  avatarImageUrl: String)
 
-object Member {
+object Contact {
 
-  def apply(jValue: JValue): Member = {
-    Member(
+  def apply(jValue: JValue): Contact = {
+    Contact(
       (jValue \ "account_id").as[Int],
-      (jValue \ "role").as[String],
+      (jValue \ "room_id").as[Int],
       (jValue \ "name").as[String],
       (jValue \ "chatwork_id").as[String],
       (jValue \ "organization_id").as[Int],
@@ -38,5 +40,5 @@ object Member {
     )
   }
 
-
 }
+

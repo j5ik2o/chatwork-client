@@ -22,18 +22,18 @@ import org.json4s.JArray
 
 import org.jboss.netty.buffer.ChannelBuffers
 import org.jboss.netty.util.CharsetUtil
-import com.github.j5ik2o.chatwork.infrastructure.api.{Client, ApiService, ActionType}
+import com.github.j5ik2o.chatwork.infrastructure.api.{Client, AbstractApiService, ActionType}
 import org.sisioh.scala.toolbox.LoggingEx
 
 private
 class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
-  extends ApiService(client.service, client.host, apiToken)
+  extends AbstractApiService(client.service, client.host, apiToken)
   with RoomApiService with LoggingEx {
 
   def create(params: CreateRoomParams)
             (implicit executor: ExecutionContext): Future[Int] = {
     val request = createRequestBuilder("/v1/rooms").
-      addFormElement(toTuples(params): _*).
+      addFormElement(toForm(params): _*).
       buildFormPost(false)
 
     sendRequest(request).map {
@@ -43,31 +43,14 @@ class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
   }
 
 
-  def list(implicit executor: ExecutionContext): Future[Seq[Room]] = withDebugScope("list"){
+  def list(implicit executor: ExecutionContext): Future[Seq[Room]] = withDebugScope("list") {
     scopedDebug("createRequestBuilder")
     val request = createRequestBuilder("/v1/rooms").buildGet()
     scopedDebug(s"sendRequest($request)")
     sendRequest(request).map {
       response =>
-        getResponseAsJValue(response).as[JArray].arr.map {
-          e =>
-            Room(
-              (e \ "room_id").as[Int],
-              (e \ "name").as[String],
-              (e \ "type").as[String],
-              (e \ "role").as[String],
-              (e \ "sticky").as[Boolean],
-              (e \ "unread_num").as[Int],
-              (e \ "mention_num").as[Int],
-              (e \ "mytask_num").as[Int],
-              (e \ "message_num").as[Int],
-              (e \ "file_num").as[Int],
-              (e \ "task_num").as[Int],
-              (e \ "icon_path").as[String],
-              None,
-              Some((e \ "last_update_time").as[Long])
-            )
-        }
+        val json = getResponseAsJValue(response)
+        json.as[JArray].arr.map(Room.listEntry)
     }
   }
 
@@ -77,22 +60,8 @@ class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
 
     sendRequest(request).map {
       response =>
-        val jValue = getResponseAsJValue(response)
-        Room(
-          (jValue \ "room_id").as[Int],
-          (jValue \ "name").as[String],
-          (jValue \ "type").as[String],
-          (jValue \ "role").as[String],
-          (jValue \ "sticky").as[Boolean],
-          (jValue \ "unread_num").as[Int],
-          (jValue \ "mention_num").as[Int],
-          (jValue \ "mytask_num").as[Int],
-          (jValue \ "message_num").as[Int],
-          (jValue \ "file_num").as[Int],
-          (jValue \ "task_num").as[Int],
-          (jValue \ "icon_path").as[String],
-          Some((jValue \ "description").as[String])
-        )
+        val json = getResponseAsJValue(response)
+        Room.single(json)
     }
   }
 
@@ -100,7 +69,7 @@ class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
   def update(params: UpdateRoomParams)
             (implicit executor: ExecutionContext): Future[Int] = {
     val request = createRequestBuilder(s"/v1/rooms/${params.roomId}").
-      addFormElement(toTuples(params): _*).
+      addFormElement(toForm(params): _*).
       buildFormPost(false)
 
     sendRequest(request).flatMap {

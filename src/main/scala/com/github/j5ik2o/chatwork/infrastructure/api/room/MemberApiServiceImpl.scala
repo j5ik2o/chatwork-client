@@ -1,7 +1,7 @@
 package com.github.j5ik2o.chatwork.infrastructure.api.room
 
 import scala.concurrent.{Future, ExecutionContext}
-import com.github.j5ik2o.chatwork.infrastructure.api.ApiService
+import com.github.j5ik2o.chatwork.infrastructure.api.AbstractApiService
 import org.json4s._
 import com.github.j5ik2o.chatwork.infrastructure.api.Client
 import org.jboss.netty.handler.codec.http.HttpResponseStatus
@@ -10,7 +10,7 @@ import org.json4s.DefaultReaders._
 
 private
 class MemberApiServiceImpl(client: Client, apiToken: Option[String] = None)
-  extends ApiService(client.service, client.host, apiToken) with MemberApiService {
+  extends AbstractApiService(client.service, client.host, apiToken) with MemberApiService {
 
   def list(roomId: Int)(implicit executor: ExecutionContext): Future[Seq[Member]] = {
     val request = createRequestBuilder(s"/v1/rooms/$roomId/members").buildGet()
@@ -19,6 +19,8 @@ class MemberApiServiceImpl(client: Client, apiToken: Option[String] = None)
         if (response.getStatus == HttpResponseStatus.OK) {
           val json = getResponseAsJValue(response)
           Future.successful(json.as[JArray].arr.map(Member.apply))
+        } else if (response.getStatus == HttpResponseStatus.NO_CONTENT) {
+          Future.successful(Seq.empty)
         } else {
           handleErrorResponse(response)
         }
@@ -27,7 +29,7 @@ class MemberApiServiceImpl(client: Client, apiToken: Option[String] = None)
 
   def update(params: UpdateMemberParams)(implicit executor: ExecutionContext): Future[UpdateResult] = {
     val request = createRequestBuilder(s"/v1/rooms/${params.roomId}/members").
-      addFormElement(toTuples(params): _*).
+      addFormElement(toForm(params): _*).
       buildFormPost(false)
 
     sendRequest(request).flatMap {

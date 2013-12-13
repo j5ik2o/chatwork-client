@@ -1,13 +1,13 @@
 package com.github.j5ik2o.chatwork.infrastructure.api.room
 
 import scala.concurrent.{Future, ExecutionContext}
-import com.github.j5ik2o.chatwork.infrastructure.api.{ApiService, Client}
+import com.github.j5ik2o.chatwork.infrastructure.api.{AbstractApiService, Client}
 import org.jboss.netty.util.CharsetUtil
 import org.jboss.netty.handler.codec.http.HttpResponseStatus
 import org.json4s.DefaultReaders._
 
 class MessageApiServiceImpl(client: Client, apiToken: Option[String] = None)
-  extends ApiService(client.service, client.host, apiToken)
+  extends AbstractApiService(client.service, client.host, apiToken)
   with MessageApiService {
 
   def send(roomId: Int, message: String)(implicit executor: ExecutionContext): Future[Int] = {
