@@ -6,9 +6,6 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/**
- * Created by junichi on 2013/12/13.
- */
 class MemberApiServiceImplSpec extends Specification {
   val client = ClientFactory.create("api.chatwork.com")
   val api = RoomApiService(client)
