@@ -15,20 +15,26 @@
  */
 package com.github.j5ik2o.chatwork.infrastructure.api
 
-import com.twitter.finagle.Service
-import org.jboss.netty.handler.codec.http._
-import com.twitter.finagle.http.{Request, RequestBuilder}
-import scala.concurrent.{Future, ExecutionContext}
 import com.github.j5ik2o.chatwork.infrastructure.FutureUtil._
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
+import com.google.common.util.concurrent.RateLimiter
+import com.twitter.finagle.Service
+import com.twitter.finagle.http.{Request, RequestBuilder}
+import org.jboss.netty.handler.codec.http._
 import org.jboss.netty.util.CharsetUtil._
 import org.json4s.DefaultReaders._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import scala.concurrent.Future
 
 abstract class AbstractApiService
-(service: Service[HttpRequest, HttpResponse], host: String, _apiToken: Option[String]) {
+(service: Service[HttpRequest, HttpResponse],
+ host: String, _apiToken: Option[String]) {
+ 
+  val apiCallRate: Double = 0.15
 
   private val apiToken = _apiToken.getOrElse(System.getProperty("apiToken"))
+
+  private val rateLimiter = RateLimiter.create(apiCallRate)
 
   protected def getResponseAsJValue(response: HttpResponse): JValue =
     parse(response.getContent.toString(UTF_8))
@@ -47,7 +53,8 @@ abstract class AbstractApiService
   protected def createRequestBuilder(path: String) =
     RequestBuilder().url("http://" + host + path).addHeader("X-ChatWorkToken", apiToken)
 
-  protected def sendRequest(request: HttpRequest)(implicit executor: ExecutionContext): Future[HttpResponse] = {
+  protected def sendRequest(request: HttpRequest): Future[HttpResponse] = {
+    rateLimiter.acquire()
     service(Request(request)).toScala
   }
 
