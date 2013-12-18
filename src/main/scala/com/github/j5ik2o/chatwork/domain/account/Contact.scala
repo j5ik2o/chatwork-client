@@ -13,9 +13,11 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.github.j5ik2o.chatwork.domain
+package com.github.j5ik2o.chatwork.domain.account
 
+import com.github.j5ik2o.chatwork.domain.RoomId
 import java.net.URL
+import org.sisioh.dddbase.core.model.EntityCloneable
 
 /**
  * {
@@ -29,22 +31,33 @@ import java.net.URL
     "avatar_image_url": "https://example.com/abc.png"
   }
  */
-trait Contact {
 
-  val accountId: AccountId
+trait Contact extends Account with EntityCloneable[AccountId, Contact] with Ordered[Contact] {
 
-  val roomId: RoomId
+}
 
-  val name: String
+object Contact {
+  def apply
+  (identity: AccountId,
+   roomId: RoomId,
+   name: String,
+   chatWorkId: String,
+   organizationId: Int,
+   organizationName: String,
+   department: String,
+   avatarImageUrl: URL
+    ): Contact = {
+    new ContactImpl(
+      identity,
+      roomId,
+      name,
+      chatWorkId,
+      organizationId,
+      organizationName,
+      department,
+      avatarImageUrl
+    )
+  }
 
-  val chatWorkId: String
-
-  val organizationId: Int
-
-  val organizationName: String
-
-  val department: String
-
-  val avatarImageUrl: URL
 
 }

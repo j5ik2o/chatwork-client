@@ -1,11 +1,12 @@
 package com.github.j5ik2o.chatwork.infrastructure.api.my
 
 import com.github.j5ik2o.chatwork.infrastructure.api.{AbstractApiService, Client}
-import scala.concurrent.{Future, ExecutionContext}
 import org.jboss.netty.handler.codec.http.HttpResponseStatus
-import org.json4s._
 import org.json4s.DefaultReaders._
+import org.json4s._
+import scala.concurrent.{Future, ExecutionContext}
 
+private
 class TaskApiServiceImpl(client: Client, apiToken: Option[String] = None)
   extends AbstractApiService(client.service, client.host, apiToken) with TaskApiService {
 

@@ -15,15 +15,15 @@
  */
 package com.github.j5ik2o.chatwork.domain
 
-import org.sisioh.dddbase.core.model.Entity
 import java.util.Date
-import java.net.URL
+import org.sisioh.dddbase.core.model.Entity
+import com.github.j5ik2o.chatwork.domain.account.Account
 
 trait Room extends Entity[RoomId] {
 
   val name: String
 
-  val roomType: String
+  val roomType: RoomType.Value
 
   val roomRole: RoomRole.Value
 
@@ -61,15 +61,8 @@ trait Room extends Entity[RoomId] {
     "avatar_image_url": "https://example.com/abc.png"
   }
    */
-  trait Member {
-    val accountId: AccountId
+  trait Member extends Account {
     val role: String
-    val name: String
-    val chatWorkId: String
-    val organizationId: Int
-    val organizationName: String
-    val department: String
-    val avatarImageUrl: URL
   }
 
 }

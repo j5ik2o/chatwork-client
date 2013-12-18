@@ -6,6 +6,7 @@ import org.jboss.netty.util.CharsetUtil
 import org.jboss.netty.handler.codec.http.HttpResponseStatus
 import org.json4s.DefaultReaders._
 
+private
 class MessageApiServiceImpl(client: Client, apiToken: Option[String] = None)
   extends AbstractApiService(client.service, client.host, apiToken)
   with MessageApiService {
