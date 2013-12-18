@@ -1,4 +1,4 @@
-package com.github.j5ik2o.chatwork.domain.account
+package com.github.j5ik2o.chatwork.domain.contact
 
 import com.github.j5ik2o.chatwork.domain.RoomId
 import com.github.j5ik2o.chatwork.infrastructure.api.Client
@@ -10,12 +10,12 @@ import java.util.concurrent.ConcurrentHashMap
 import scala.collection.JavaConverters._
 import scala.concurrent._
 
-class AsyncAccountRepositoryImpl(client: Client, apiToken: Option[String] = None) extends AsyncAccountRepository {
-  type This = AsyncAccountRepository
+class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None) extends AsyncContactRepository {
+  type This = AsyncContactRepository
 
   private val api = ContactApiService(client, apiToken)
 
-  private val entities = new ConcurrentHashMap[AccountId, Account]()
+  private val entities = new ConcurrentHashMap[AccountId, Contact]()
 
   private val timer = new Timer()
 
@@ -34,7 +34,7 @@ class AsyncAccountRepositoryImpl(client: Client, apiToken: Option[String] = None
         val contacts = result.map {
           e =>
             val id = AccountId(e.accountId)
-            val v = Account(
+            val v = Contact(
               identity = id,
               roomId = RoomId(e.roomId),
               name = e.name,
@@ -51,7 +51,7 @@ class AsyncAccountRepositoryImpl(client: Client, apiToken: Option[String] = None
     }
   }
 
-  def resolve(identity: AccountId)(implicit ctx: EntityIOContext[Future]): Future[Account] = synchronized {
+  def resolve(identity: AccountId)(implicit ctx: EntityIOContext[Future]): Future[Contact] = synchronized {
     implicit val executor = getExecutionContext(ctx)
     containsByIdentity(identity).flatMap {
       result =>
@@ -72,7 +72,7 @@ class AsyncAccountRepositoryImpl(client: Client, apiToken: Option[String] = None
     Future(entities.contains(identity))
   }
 
-  def resolveAll(implicit ctx: EntityIOContext[Future]): Future[Seq[Account]] = {
+  def resolveAll(implicit ctx: EntityIOContext[Future]): Future[Seq[Contact]] = {
     implicit val executor = getExecutionContext(ctx)
     def entitiesToSeq = {
       entities.entrySet().asScala.map {

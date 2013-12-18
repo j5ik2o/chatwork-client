@@ -32,7 +32,7 @@ abstract class AbstractApiService
  
   val apiCallRate: Double = 0.15
 
-  private val apiToken = _apiToken.getOrElse(System.getProperty("apiToken"))
+  private val apiToken = _apiToken.orElse(Option(System.getProperty("apiToken")))
 
   private val rateLimiter = RateLimiter.create(apiCallRate)
 
@@ -51,7 +51,7 @@ abstract class AbstractApiService
   }
 
   protected def createRequestBuilder(path: String) =
-    RequestBuilder().url("http://" + host + path).addHeader("X-ChatWorkToken", apiToken)
+    RequestBuilder().url("http://" + host + path).addHeader("X-ChatWorkToken", apiToken.get)
 
   protected def sendRequest(request: HttpRequest): Future[HttpResponse] = {
     rateLimiter.acquire()

@@ -5,7 +5,7 @@ import com.twitter.finagle.builder.ClientBuilder
 
 object ClientFactory {
 
-  def create(host: String) =
+  def create(host: String = "api.chatwork.com") =
     Client(ClientBuilder()
       .codec(Http())
       .hosts(host + ":443")

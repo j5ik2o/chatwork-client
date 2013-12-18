@@ -16,7 +16,7 @@
 package com.github.j5ik2o.chatwork.domain
 
 import java.net.URL
-import com.github.j5ik2o.chatwork.domain.account.AccountId
+import com.github.j5ik2o.chatwork.domain.contact.AccountId
 
 /**
  * {

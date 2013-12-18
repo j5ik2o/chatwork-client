@@ -17,7 +17,7 @@ package com.github.j5ik2o.chatwork.domain
 
 import java.util.Date
 import org.sisioh.dddbase.core.model.Entity
-import com.github.j5ik2o.chatwork.domain.account.Account
+import com.github.j5ik2o.chatwork.domain.contact.Contact
 
 trait Room extends Entity[RoomId] {
 
@@ -61,7 +61,7 @@ trait Room extends Entity[RoomId] {
     "avatar_image_url": "https://example.com/abc.png"
   }
    */
-  trait Member extends Account {
+  trait Member extends Contact {
     val role: String
   }
 

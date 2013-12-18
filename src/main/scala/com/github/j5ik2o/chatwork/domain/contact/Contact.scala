@@ -1,10 +1,10 @@
-package com.github.j5ik2o.chatwork.domain.account
+package com.github.j5ik2o.chatwork.domain.contact
 
 import com.github.j5ik2o.chatwork.domain.RoomId
 import java.net.URL
 import org.sisioh.dddbase.core.model.{EntityCloneable, Entity}
 
-trait Account extends Entity[AccountId]  {
+trait Contact extends Entity[AccountId]  {
 
   // val accountId: AccountId = identity
 
@@ -37,7 +37,7 @@ trait Account extends Entity[AccountId]  {
 
 }
 
-object Account {
+object Contact {
   def apply
   (identity: AccountId,
    roomId: RoomId,
@@ -47,8 +47,8 @@ object Account {
    organizationName: String,
    department: String,
    avatarImageUrl: URL
-    ): Account = {
-    new AccountImpl(
+    ): Contact = {
+    new ContactImpl(
       identity,
       roomId,
       name,
