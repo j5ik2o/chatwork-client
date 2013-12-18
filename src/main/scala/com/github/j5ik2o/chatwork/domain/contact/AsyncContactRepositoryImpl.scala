@@ -9,19 +9,22 @@ import org.sisioh.dddbase.core.lifecycle.EntityIOContext
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.JavaConverters._
 import scala.concurrent._
+import org.sisioh.scala.toolbox.LoggingEx
 
-class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None) extends AsyncContactRepository {
+private
+class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None)
+  extends AsyncContactRepository with LoggingEx {
   type This = AsyncContactRepository
 
   private val api = ContactApiService(client, apiToken)
 
-  private val entities = new ConcurrentHashMap[AccountId, Contact]()
+  private val caches = new ConcurrentHashMap[AccountId, Contact]()
 
   private val timer = new Timer()
 
   private object Task extends TimerTask {
-    def run(): Unit = {
-      entities.clear()
+    def run(): Unit = withDebugScope("caches.clear()") {
+      caches.clear()
     }
   }
 
@@ -46,21 +49,21 @@ class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None
             )
             (id, v)
         }.toMap
-        entities.putAll(contacts.asJava)
+        caches.putAll(contacts.asJava)
         contacts
     }
   }
 
-  def resolve(identity: AccountId)(implicit ctx: EntityIOContext[Future]): Future[Contact] = synchronized {
+  def resolve(identity: AccountId)(implicit ctx: EntityIOContext[Future]): Future[Contact] = {
     implicit val executor = getExecutionContext(ctx)
     containsByIdentity(identity).flatMap {
       result =>
         if (result) {
-          Future(entities.get(identity))
+          Future(caches.get(identity))
         } else {
           loadEntities.map {
             _ =>
-              entities.get(identity)
+              caches.get(identity)
           }
         }
     }
@@ -69,22 +72,24 @@ class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None
 
   def containsByIdentity(identity: AccountId)(implicit ctx: EntityIOContext[Future]): Future[Boolean] = {
     implicit val executor = getExecutionContext(ctx)
-    Future(entities.contains(identity))
+    future {
+      caches.contains(identity)
+    }
   }
 
   def resolveAll(implicit ctx: EntityIOContext[Future]): Future[Seq[Contact]] = {
     implicit val executor = getExecutionContext(ctx)
     def entitiesToSeq = {
-      entities.entrySet().asScala.map {
+      caches.entrySet().asScala.map {
         e =>
           e.getValue
       }.toSeq
     }
     future {
       entitiesToSeq
-    }.flatMap{
+    }.flatMap {
       result =>
-        if(result.isEmpty) {
+        if (result.isEmpty) {
           loadEntities.map(_ => entitiesToSeq)
         } else {
           Future(Seq.empty)
