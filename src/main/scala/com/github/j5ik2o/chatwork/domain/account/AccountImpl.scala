@@ -3,7 +3,7 @@ package com.github.j5ik2o.chatwork.domain.account
 import com.github.j5ik2o.chatwork.domain.RoomId
 import java.net.URL
 
-class ContactImpl
+class AccountImpl
 (val identity: AccountId,
  val roomId: RoomId,
  val name: String,
@@ -12,9 +12,9 @@ class ContactImpl
  val organizationName: String,
  val department: String,
  val avatarImageUrl: URL
-  ) extends Contact {
+  ) extends Account {
 
-  def compare(that: Contact): Int =
+  def compare(that: Account): Int =
     this.identity.value compare that.identity.value
 
 }

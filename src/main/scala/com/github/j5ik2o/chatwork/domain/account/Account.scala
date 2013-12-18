@@ -21,4 +21,44 @@ trait Account extends Entity[AccountId]  {
   val department: String
 
   val avatarImageUrl: URL
+
+  override def toString() = {
+    Seq(
+      s"identity = $identity",
+      s"roomdId = $roomId",
+      s"name = $name",
+      s"chatWorkId = $chatWorkId",
+      s"organizationId = $organizationId",
+      s"organizationName = $organizationName",
+      s"department = $department",
+      s"avatarImageUrl = $avatarImageUrl"
+    ).mkString(", ")
+  }
+
+}
+
+object Account {
+  def apply
+  (identity: AccountId,
+   roomId: RoomId,
+   name: String,
+   chatWorkId: String,
+   organizationId: Int,
+   organizationName: String,
+   department: String,
+   avatarImageUrl: URL
+    ): Account = {
+    new AccountImpl(
+      identity,
+      roomId,
+      name,
+      chatWorkId,
+      organizationId,
+      organizationName,
+      department,
+      avatarImageUrl
+    )
+  }
+
+
 }
