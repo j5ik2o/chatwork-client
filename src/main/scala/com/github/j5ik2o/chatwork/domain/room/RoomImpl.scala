@@ -1,8 +1,8 @@
 package com.github.j5ik2o.chatwork.domain.room
 
 import java.util.Date
-import com.github.j5ik2o.chatwork.domain.contact.AccountId
 import java.net.URL
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
 
 private[room]
 class RoomImpl
@@ -27,13 +27,13 @@ class RoomImpl
 
 }
 
+private[room]
 class MemberImpl
 (val identity: AccountId,
  val roomId: RoomId,
  val name: String,
  val chatWorkId: String,
- val organizationId: Int,
- val organizationName: String,
+ val organization: Organization,
  val department: String,
  val avatarImageUrl: URL,
  val role: String)

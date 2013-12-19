@@ -13,9 +13,23 @@
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.github.j5ik2o.chatwork.domain.contact
+package com.github.j5ik2o.chatwork.domain
 
-import org.sisioh.dddbase.core.model.Identity
+import com.github.j5ik2o.chatwork.domain.room.RoomId
+import java.net.URL
 
-case class AccountId(value: Int) extends Identity[Int]
-
+trait Self {
+  val accountId: AccountId
+  val roomId: RoomId
+  val name: String
+  val chatWorkId: String
+  val organization: Organization
+  val department: String
+  val title: String
+  val url: URL
+  val introduction: String
+  val tel: PhoneNumbers
+  val sns: ContactAddresses
+  val avatarImageUrl: URL
+  val status: Status
+}

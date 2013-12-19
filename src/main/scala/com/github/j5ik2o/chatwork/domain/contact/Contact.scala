@@ -3,10 +3,9 @@ package com.github.j5ik2o.chatwork.domain.contact
 import java.net.URL
 import org.sisioh.dddbase.core.model.{EntityCloneable, Entity}
 import com.github.j5ik2o.chatwork.domain.room.RoomId
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
 
 trait Contact extends Entity[AccountId]  {
-
-  // val accountId: AccountId = identity
 
   val roomId: RoomId
 
@@ -14,9 +13,7 @@ trait Contact extends Entity[AccountId]  {
 
   val chatWorkId: String
 
-  val organizationId: Int
-
-  val organizationName: String
+  val organization: Organization
 
   val department: String
 
@@ -28,8 +25,7 @@ trait Contact extends Entity[AccountId]  {
       s"roomdId = $roomId",
       s"name = $name",
       s"chatWorkId = $chatWorkId",
-      s"organizationId = $organizationId",
-      s"organizationName = $organizationName",
+      s"organizationId = $organization",
       s"department = $department",
       s"avatarImageUrl = $avatarImageUrl"
     ).mkString(", ")
@@ -43,8 +39,7 @@ object Contact {
    roomId: RoomId,
    name: String,
    chatWorkId: String,
-   organizationId: Int,
-   organizationName: String,
+   organization: Organization,
    department: String,
    avatarImageUrl: URL
     ): Contact = {
@@ -53,8 +48,7 @@ object Contact {
       roomId,
       name,
       chatWorkId,
-      organizationId,
-      organizationName,
+      organization,
       department,
       avatarImageUrl
     )

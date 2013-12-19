@@ -14,6 +14,7 @@ import org.json4s.jackson.JsonMethods._
 import com.github.j5ik2o.chatwork.infrastructure.api.contact.{Contact => InfraContact}
 import com.github.j5ik2o.chatwork.domain.room.RoomId
 import java.net.URL
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
 
 class AsyncContactRepositoryImplSpec extends Specification with Mockito {
 
@@ -47,8 +48,7 @@ class AsyncContactRepositoryImplSpec extends Specification with Mockito {
       roomId = RoomId(infraContact.roomId),
       name = infraContact.name,
       chatWorkId = infraContact.chatWorkId,
-      organizationId = infraContact.organizationId,
-      organizationName = infraContact.organizationName,
+      organization = Organization(infraContact.organizationId, infraContact.organizationName),
       department = infraContact.department,
       avatarImageUrl = new URL(infraContact.avatarImageUrl)
     )

@@ -4,6 +4,7 @@ import org.sisioh.dddbase.core.lifecycle.EntityReader
 import scala.concurrent.Future
 import org.sisioh.dddbase.core.lifecycle.async.{AsyncEntityReadableBySeq, AsyncEntityReader}
 import com.github.j5ik2o.chatwork.infrastructure.api.Client
+import com.github.j5ik2o.chatwork.domain.AccountId
 
 trait ContactRepository[M[+ _]]
   extends EntityReader[AccountId, Contact, M]

@@ -1,6 +1,6 @@
 package com.github.j5ik2o.chatwork.domain.room
 
-import com.github.j5ik2o.chatwork.domain.contact.AccountId
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
 import com.github.j5ik2o.chatwork.infrastructure.api.room.{MemberApiService, RoomApiService}
 import com.github.j5ik2o.chatwork.infrastructure.api.room.{Room => InfraRoom}
 import com.github.j5ik2o.chatwork.infrastructure.api.{ApiException, Client}
@@ -9,6 +9,7 @@ import java.util.Date
 import org.sisioh.dddbase.core.lifecycle.{RepositoryException, EntityNotFoundException, EntityIOContext}
 import scala.concurrent.Future
 
+private[room]
 class AsyncRoomRepositoryImpl(client: Client, apiToken: Option[String] = None) extends AsyncRoomRepository {
 
   private[room] val roomApiService = RoomApiService(client, apiToken)
@@ -26,8 +27,7 @@ class AsyncRoomRepositoryImpl(client: Client, apiToken: Option[String] = None) e
               roomId,
               m.name,
               m.chatWorkId,
-              m.organizationId,
-              m.organizationName,
+              Organization(m.organizationId, m.organizationName),
               m.department,
               new URL(m.avatarImageUrl),
               m.role

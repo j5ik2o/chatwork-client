@@ -15,10 +15,10 @@
  */
 package com.github.j5ik2o.chatwork.domain.room
 
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
+import java.net.URL
 import java.util.Date
 import org.sisioh.dddbase.core.model.Entity
-import com.github.j5ik2o.chatwork.domain.contact.{AccountId, Contact}
-import java.net.URL
 
 trait Room extends Entity[RoomId] {
 
@@ -50,24 +50,26 @@ trait Room extends Entity[RoomId] {
 
   val members: Seq[Member]
 
-
-
 }
 
-/**
- * {
-    "account_id": 123,
-    "role": "member",
-    "name": "John Smith",
-    "chatwork_id": "tarochatworkid",
-    "organization_id": 101,
-    "organization_name": "Hello Company",
-    "department": "Marketing",
-    "avatar_image_url": "https://example.com/abc.png"
-  }
- */
-trait Member extends Contact {
+
+// ローカルエンティティ
+trait Member extends Entity[AccountId] {
+
+  val roomId: RoomId
+
+  val name: String
+
+  val chatWorkId: String
+
+  val organization: Organization
+
+  val department: String
+
+  val avatarImageUrl: URL
+
   val role: String
+
 }
 
 object Room {
@@ -78,8 +80,7 @@ object Room {
      roomId: RoomId,
      name: String,
      chatWorkId: String,
-     organizationId: Int,
-     organizationName: String,
+     organization: Organization,
      department: String,
      avatarImageUrl: URL,
      role: String): Member = {
@@ -88,8 +89,7 @@ object Room {
         roomId,
         name,
         chatWorkId,
-        organizationId,
-        organizationName,
+        organization,
         department,
         avatarImageUrl,
         role

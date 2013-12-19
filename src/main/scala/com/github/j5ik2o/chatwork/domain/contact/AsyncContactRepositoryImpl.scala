@@ -10,6 +10,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent._
 import org.sisioh.scala.toolbox.LoggingEx
 import com.github.j5ik2o.chatwork.domain.room.RoomId
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
 
 private[contact]
 class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None, cachedTime: Option[Int] = Some(60 * 1000))
@@ -45,8 +46,7 @@ class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None
               roomId = RoomId(e.roomId),
               name = e.name,
               chatWorkId = e.chatWorkId,
-              organizationId = e.organizationId,
-              organizationName = e.organizationName,
+              organization = Organization(e.organizationId, e.organizationName),
               department = e.department,
               avatarImageUrl = new URL(e.avatarImageUrl)
             )

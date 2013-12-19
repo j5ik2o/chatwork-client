@@ -1,6 +1,5 @@
 package com.github.j5ik2o.chatwork.domain.room
 
-import com.github.j5ik2o.chatwork.domain.contact.AccountId
 import com.github.j5ik2o.chatwork.domain.room.Room.Member
 import com.github.j5ik2o.chatwork.infrastructure.api.Client
 import com.github.j5ik2o.chatwork.infrastructure.api.room.{MemberApiService, RoomApiService}
@@ -16,6 +15,7 @@ import org.specs2.specification.Scope
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+import com.github.j5ik2o.chatwork.domain.{Organization, AccountId}
 
 
 class AsyncRoomRepositoryImplSpec extends Specification with Mockito {
@@ -72,8 +72,7 @@ class AsyncRoomRepositoryImplSpec extends Specification with Mockito {
       roomId = RoomId(infraRoom.roomId),
       name = infraMember.name,
       chatWorkId = infraMember.chatWorkId,
-      organizationId = infraMember.organizationId,
-      organizationName = infraMember.organizationName,
+      organization = Organization(infraMember.organizationId,infraMember.organizationName),
       department = infraMember.department,
       avatarImageUrl = new URL(infraMember.avatarImageUrl),
       role = infraMember.role
