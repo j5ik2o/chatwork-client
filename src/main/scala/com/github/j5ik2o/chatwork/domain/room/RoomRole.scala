@@ -2,6 +2,8 @@ package com.github.j5ik2o.chatwork.domain.room
 
 object RoomRole extends Enumeration {
 
-  val Admin, Member, ReadOnly = Value
+  val Admin = Value("admin")
+  val Member = Value("member")
+  val ReadOnly = Value("readonly")
 
 }

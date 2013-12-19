@@ -1,18 +1,19 @@
 package com.github.j5ik2o.chatwork.domain.room
 
+import com.github.j5ik2o.chatwork.domain.contact.AccountId
+import com.github.j5ik2o.chatwork.infrastructure.api.room.{MemberApiService, RoomApiService}
+import com.github.j5ik2o.chatwork.infrastructure.api.room.{Room => InfraRoom}
+import com.github.j5ik2o.chatwork.infrastructure.api.{ApiException, Client}
+import java.net.URL
+import java.util.Date
 import org.sisioh.dddbase.core.lifecycle.{RepositoryException, EntityNotFoundException, EntityIOContext}
 import scala.concurrent.Future
-import com.github.j5ik2o.chatwork.infrastructure.api.{ApiException, Client}
-import com.github.j5ik2o.chatwork.infrastructure.api.room.{MemberApiService, RoomApiService}
-import java.util.Date
-import java.net.URL
-import com.github.j5ik2o.chatwork.domain.contact.AccountId
 
 class AsyncRoomRepositoryImpl(client: Client, apiToken: Option[String] = None) extends AsyncRoomRepository {
 
-  private val roomApiService = RoomApiService(client, apiToken)
+  private[room] val roomApiService = RoomApiService(client, apiToken)
 
-  private val memberApiService = MemberApiService(client, apiToken)
+  private[room] val memberApiService = MemberApiService(client, apiToken)
 
   private def getMembers(roomId: RoomId)(implicit ctx: EntityIOContext[Future]): Future[Seq[Member]] = {
     implicit val executor = getExecutionContext(ctx)
@@ -36,7 +37,6 @@ class AsyncRoomRepositoryImpl(client: Client, apiToken: Option[String] = None) e
     }
   }
 
-  import com.github.j5ik2o.chatwork.infrastructure.api.room.{Room => InfraRoom}
 
   private def convertToEntity(infraRoom: InfraRoom)(implicit ctx: EntityIOContext[Future]) = {
     implicit val executor = getExecutionContext(ctx)
@@ -46,7 +46,7 @@ class AsyncRoomRepositoryImpl(client: Client, apiToken: Option[String] = None) e
         Room(
           identity = RoomId(infraRoom.roomId),
           name = infraRoom.name,
-          roomType = RoomType.withName(infraRoom.roomRole),
+          roomType = RoomType.withName(infraRoom.roomType),
           roomRole = RoomRole.withName(infraRoom.roomRole),
           sticky = infraRoom.sticky,
           description = infraRoom.description,
@@ -82,7 +82,7 @@ class AsyncRoomRepositoryImpl(client: Client, apiToken: Option[String] = None) e
         Room(
           identity = RoomId(e.roomId),
           name = e.name,
-          roomType = RoomType.withName(e.roomRole),
+          roomType = RoomType.withName(e.roomType),
           roomRole = RoomRole.withName(e.roomRole),
           sticky = e.sticky,
           description = e.description,
