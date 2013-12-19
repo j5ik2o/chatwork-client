@@ -1,7 +1,7 @@
 package com.github.j5ik2o.chatwork.domain.contact
 
-import com.github.j5ik2o.chatwork.domain.RoomId
 import java.net.URL
+import com.github.j5ik2o.chatwork.domain.room.RoomId
 
 class ContactImpl
 (val identity: AccountId,

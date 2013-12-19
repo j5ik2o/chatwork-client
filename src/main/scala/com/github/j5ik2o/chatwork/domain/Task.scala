@@ -3,6 +3,7 @@ package com.github.j5ik2o.chatwork.domain
 import java.util.Date
 import org.sisioh.dddbase.core.model.Entity
 import com.github.j5ik2o.chatwork.domain.contact.AccountId
+import com.github.j5ik2o.chatwork.domain.room.RoomId
 
 /**
  * {

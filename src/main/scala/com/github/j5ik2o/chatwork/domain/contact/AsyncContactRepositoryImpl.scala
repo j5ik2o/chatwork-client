@@ -1,6 +1,5 @@
 package com.github.j5ik2o.chatwork.domain.contact
 
-import com.github.j5ik2o.chatwork.domain.RoomId
 import com.github.j5ik2o.chatwork.infrastructure.api.Client
 import com.github.j5ik2o.chatwork.infrastructure.api.contact.ContactApiService
 import java.net.URL
@@ -10,13 +9,14 @@ import java.util.concurrent.ConcurrentHashMap
 import scala.collection.JavaConverters._
 import scala.concurrent._
 import org.sisioh.scala.toolbox.LoggingEx
+import com.github.j5ik2o.chatwork.domain.room.RoomId
 
-private
-class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None)
+private[contact]
+class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None, cachedTime: Option[Int] = Some(60 * 1000))
   extends AsyncContactRepository with LoggingEx {
   type This = AsyncContactRepository
 
-  private val api = ContactApiService(client, apiToken)
+  private[contact] val apiService = ContactApiService(client, apiToken)
 
   private val caches = new ConcurrentHashMap[AccountId, Contact]()
 
@@ -28,11 +28,14 @@ class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None
     }
   }
 
-  timer.schedule(Task, 0, 60 * 1000)
+  cachedTime.foreach {
+    t =>
+      timer.schedule(Task, 0, t)
+  }
 
   private def loadEntities(implicit ctx: EntityIOContext[Future]) = {
     implicit val executor = getExecutionContext(ctx)
-    api.list.map {
+    apiService.list.map {
       result =>
         val contacts = result.map {
           e =>
@@ -83,7 +86,7 @@ class AsyncContactRepositoryImpl(client: Client, apiToken: Option[String] = None
       caches.entrySet().asScala.map {
         e =>
           e.getValue
-      }.toSeq
+      }.toList
     }
     future {
       entitiesToSeq

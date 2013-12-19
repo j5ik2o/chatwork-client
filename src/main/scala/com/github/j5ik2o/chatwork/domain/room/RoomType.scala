@@ -1,4 +1,4 @@
-package com.github.j5ik2o.chatwork.domain
+package com.github.j5ik2o.chatwork.domain.room
 
 object RoomType extends Enumeration {
 

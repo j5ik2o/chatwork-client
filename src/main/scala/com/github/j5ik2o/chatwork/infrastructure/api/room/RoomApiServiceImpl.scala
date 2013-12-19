@@ -58,10 +58,14 @@ class RoomApiServiceImpl(client: Client, apiToken: Option[String] = None)
          (implicit executor: ExecutionContext): Future[Room] = {
     val request = createRequestBuilder(s"/v1/rooms/$identity").buildGet()
 
-    sendRequest(request).map {
+    sendRequest(request).flatMap {
       response =>
-        val json = getResponseAsJValue(response)
-        Room.single(json)
+        if (response.getStatus == HttpResponseStatus.OK) {
+          val json = getResponseAsJValue(response)
+          Future.successful(Room.single(json))
+        } else {
+          handleErrorResponse(response)
+        }
     }
   }
 

@@ -1,8 +1,8 @@
 package com.github.j5ik2o.chatwork.domain.contact
 
-import com.github.j5ik2o.chatwork.domain.RoomId
 import java.net.URL
 import org.sisioh.dddbase.core.model.{EntityCloneable, Entity}
+import com.github.j5ik2o.chatwork.domain.room.RoomId
 
 trait Contact extends Entity[AccountId]  {
 
